@@ -50,7 +50,7 @@ MD5 (img/foo.jpg) = 7ab77224654503a92a1c45db8a3e0d79
 
 # Dependencies
 
-- Zig 0.10.0: the current stable version at the moment.
+- Zig 0.10.1: the current stable version at the moment.
 
 # Building
 
