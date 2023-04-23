@@ -1,0 +1,8 @@
+zig-cache
+zig-out
+.DS_Store
+img
+_img
+*.jpg
+*.jpeg
+_test_img
