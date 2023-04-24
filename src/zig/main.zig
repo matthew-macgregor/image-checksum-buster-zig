@@ -1,8 +1,8 @@
 const std = @import("std");
-const img = @import("image");
 const clap = @import("clap");
-const cfg = @import("config");
-const ansi = @import("ansi");
+const img = @import("image.zig");
+const cfg = @import("config.zig");
+const ansi = @import("ansi.zig");
 const DEBUG = (std.debug.runtime_safety);
 
 const StatusCode = enum(u8) {

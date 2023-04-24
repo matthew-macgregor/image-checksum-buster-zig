@@ -13,12 +13,10 @@ pub fn build(b: *std.build.Builder) void {
 
     // Zig executable
     const exe = b.addExecutable("izbuster", "src/zig/main.zig");
-    exe.addPackagePath("image", "src/zig/image.zig");
-    exe.addPackagePath("config", "src/zig/config.zig");
-    exe.addPackagePath("ansi", "src/zig/ansi.zig");
     exe.addPackagePath("clap", "libs/zig-clap/clap.zig");
     exe.addIncludePath("libs");
-    // -fno-sanitize=undefined: https://github.com/ziglang/zig/wiki/FAQ#why-do-i-get-illegal-instruction-when-using-with-zig-cc-to-build-c-code
+    // -fno-sanitize=undefined:
+    // https://github.com/ziglang/zig/wiki/FAQ#why-do-i-get-illegal-instruction-when-using-with-zig-cc-to-build-c-code
     // stb_image has UB in stbi_write_jpg, and Clang treats this as illegal instruction in debug mode.
     exe.addCSourceFile("libs/stb_image/stbi_image.c", &.{ "-Wall", "-Wextra", "-Werror", "-std=c99", "-fno-sanitize=undefined" });
     exe.setTarget(target);
