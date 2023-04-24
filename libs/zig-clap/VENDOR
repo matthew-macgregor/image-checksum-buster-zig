@@ -1,3 +1,0 @@
-`zig-clap` was vendored from 05a50fe7fe833059db8550c34bc69fedd8bb0af8 (master
-at the time), but I made some small modifications to make it compile with
-Zig 0.10.0, which was the stable version at the time this repo was created.

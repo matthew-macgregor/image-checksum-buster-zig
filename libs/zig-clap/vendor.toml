@@ -1,0 +1,5 @@
+name = 'zig-clap'
+git_commit = '05a50fe7fe833059db8550c34bc69fedd8bb0af8'
+known_zig_version = [ '0.10.1' ]
+repository = 'https://github.com/Hejsil/zig-clap'
+license_spdx = 'MIT'

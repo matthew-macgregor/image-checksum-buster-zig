@@ -1,0 +1,5 @@
+name = 'stb_image'
+git_commit = '5736b15f7ea0ffb08dd38af21067c314d6a3aae9'
+known_zig_version = [ '0.10.1' ]
+repository = 'https://github.com/nothings/stb'
+license = 'Public Domain'

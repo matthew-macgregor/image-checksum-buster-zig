@@ -1,0 +1,5 @@
+name = 'cargs'
+git_commit = 'bd21f6d8e4e809343171a7a52c9e3259459d19e9'
+known_zig_version = [ '0.10.1' ]
+repository = 'https://github.com/likle/cargs'
+license_spdx = 'MIT'
