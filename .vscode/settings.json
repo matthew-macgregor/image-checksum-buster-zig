@@ -1,6 +1,10 @@
 {
     "files.associations": {
         "stb_image_write.h": "c",
-        "stb_image.h": "c"
+        "stb_image.h": "c",
+        "stdio.h": "c",
+        "stdbool.h": "c",
+        "stdlib.h": "c",
+        "string.h": "c"
     }
 }

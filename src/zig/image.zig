@@ -6,7 +6,7 @@ const c = @cImport({
 });
 
 const DEBUG = (std.debug.runtime_safety);
-pub const StbImageError = error{ IOError, IOInputError };
+pub const StbImageError = error{ IOError, IOReadError, IOWriteError };
 
 // icbust_file_w_copy: leaving this here as an example of allocating a copy of
 // the original image and modifying the bytes of that buffer. It took a few
@@ -19,7 +19,7 @@ pub fn icbust_file_w_copy(allocator: *const std.mem.Allocator, input_filename: [
     const ptr_in_filen = @ptrCast([*c]const u8, input_filename);
     const orig_img_buff = c.stbi_load(ptr_in_filen, &width, &height, &channels, 0);
     if (orig_img_buff == 0) {
-        return StbImageError.IOInputError;
+        return StbImageError.IOReadError;
     }
 
     const img_size: usize = @intCast(usize, width * height * channels);
@@ -71,7 +71,7 @@ pub fn icbust_file(input_filename: []const u8, output_filename: []const u8, debu
     defer c.stbi_image_free(img);
 
     if (img == 0) {
-        return StbImageError.IOInputError;
+        return StbImageError.IOReadError;
     }
 
     const img_size: usize = @intCast(usize, width * height * channels);
@@ -95,6 +95,6 @@ pub fn icbust_file(input_filename: []const u8, output_filename: []const u8, debu
 
     const write_result = c.stbi_write_jpg(@ptrCast([*c]const u8, output_filename), width, height, channels, img, 100);
     if (write_result == 0) {
-        return StbImageError.IOError;
+        return StbImageError.IOWriteError;
     }
 }

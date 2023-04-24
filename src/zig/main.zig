@@ -58,6 +58,10 @@ pub fn main() u8 {
 
     const debug = (res.args.debug != 0);
 
+    if (debug) {
+        std.debug.print("Debug mode.\n", .{});
+    }
+
     if (res.positionals.len > 0) {
         const filen_in = res.positionals[0];
         if (res.args.output) |filen_out| {
@@ -68,7 +72,7 @@ pub fn main() u8 {
 
             img.icbust_file(filen_in, filen_out, debug) catch |err| {
                 switch (err) {
-                    img.StbImageError.IOInputError => {
+                    img.StbImageError.IOReadError => {
                         std.debug.print("{s}There was an error reading from the file {s}: {any}.{s}\n", .{ ansi.red, filen_in, err, ansi.reset });
                     },
                     else => {

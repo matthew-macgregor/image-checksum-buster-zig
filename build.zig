@@ -11,10 +11,11 @@ pub fn build(b: *std.build.Builder) void {
     // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
     const mode = b.standardReleaseOptions();
 
-    const exe = b.addExecutable("izbuster", "src/main.zig");
-    exe.addPackagePath("image", "src/image.zig");
-    exe.addPackagePath("config", "src/config.zig");
-    exe.addPackagePath("ansi", "src/ansi.zig");
+    // Zig executable
+    const exe = b.addExecutable("izbuster", "src/zig/main.zig");
+    exe.addPackagePath("image", "src/zig/image.zig");
+    exe.addPackagePath("config", "src/zig/config.zig");
+    exe.addPackagePath("ansi", "src/zig/ansi.zig");
     exe.addPackagePath("clap", "libs/zig-clap/clap.zig");
     exe.addIncludePath("libs");
     // -fno-sanitize=undefined: https://github.com/ziglang/zig/wiki/FAQ#why-do-i-get-illegal-instruction-when-using-with-zig-cc-to-build-c-code
@@ -30,11 +31,11 @@ pub fn build(b: *std.build.Builder) void {
         run_cmd.addArgs(args);
     }
 
-    const run_step = b.step("run", "Run the app");
+    const run_step = b.step("run/zig", "Run the app");
     run_step.dependOn(&run_cmd.step);
 
     const exe_tests = b.addTest("src/test.zig");
-    exe_tests.addPackagePath("image", "src/image.zig");
+    exe_tests.addPackagePath("image", "src/zig/image.zig");
     exe_tests.addIncludePath("libs");
     // -fno-sanitize=undefined: https://github.com/ziglang/zig/wiki/FAQ#why-do-i-get-illegal-instruction-when-using-with-zig-cc-to-build-c-code
     // stb_image has UB in stbi_write_jpg, and Clang treats this as illegal instruction in debug mode.
@@ -45,4 +46,24 @@ pub fn build(b: *std.build.Builder) void {
 
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&exe_tests.step);
+
+    // C executable
+    const exe_c = b.addExecutable("icbuster", "src/c/main.c");
+    exe_c.addCSourceFile("libs/stb_image/stbi_image.c", &.{ "-Wall", "-Wextra", "-Werror", "-std=c99", "-fno-sanitize=undefined" });
+    exe_c.addCSourceFile("libs/cargs/cargs.c", &.{ "-Wall", "-Wextra", "-Werror", "-std=c11", "-fno-sanitize=undefined" });
+    exe_c.addCSourceFile("src/c/image.c", &.{ "-Wall", "-Wextra", "-Werror", "-std=c99", "-fno-sanitize=undefined" });
+    exe_c.addIncludePath("libs");
+    exe_c.addIncludePath("src/c");
+    exe_c.setTarget(target);
+    exe_c.setBuildMode(mode);
+    exe_c.install();
+
+    const run_cmd_c = exe_c.run();
+    run_cmd_c.step.dependOn(b.getInstallStep());
+    if (b.args) |args| {
+        run_cmd_c.addArgs(args);
+    }
+
+    const run_step_c = b.step("run/c", "Run the app");
+    run_step_c.dependOn(&run_cmd_c.step);
 }
