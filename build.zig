@@ -33,7 +33,7 @@ pub fn build(b: *std.build.Builder) void {
     const run_step = b.step("run/zig", "Run the app");
     run_step.dependOn(&run_cmd.step);
 
-    const exe_tests = b.addTest("src/test.zig");
+    const exe_tests = b.addTest("src/zig/test.zig");
     exe_tests.addPackagePath("image", "src/zig/image.zig");
     exe_tests.addIncludePath("libs");
     // -fno-sanitize=undefined: https://github.com/ziglang/zig/wiki/FAQ#why-do-i-get-illegal-instruction-when-using-with-zig-cc-to-build-c-code
