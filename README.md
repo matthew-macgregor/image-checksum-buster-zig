@@ -5,8 +5,18 @@ Project goals:
 - Learn something about the Zig programming language in a trivial project.
 - Leverage the `stb_image` single header libraries.
 - Mix C and Zig in a single project.
+- Use a simple C library in a Zig project.
 - Evaluate Zig's build tools, potentially as a standalone alternative to CMake etc.
 - Solve a niche problem that crops up day-to-day for me.
+
+# Implementations
+
+The repo contains two side-by-side implementations that (currently) support
+parallel features: a C implementation and a Zig implementation. `zig build`
+builds both implementations: `icbuster` is the C version, and `izbuster` is the
+Zig implementation. The C implementation is mostly there for comparison.
+
+- Note: There are only tests written for the Zig version of the program.
 
 # License
 
@@ -51,14 +61,22 @@ MD5 (img/foo.jpg) = 7ab77224654503a92a1c45db8a3e0d79
 # Dependencies
 
 - Zig 0.10.1: the current stable version at the moment.
+- All other dependencies are vendored into the libs folder.
 
-# Building
+# Build
 
 ```sh
 zig build -Drelease-safe
 ```
 
-# Tests
+# Develop
+
+```sh
+zig build run/zig -- --help # build/run the C impl
+zig build run/c -- --help   # build/run the Zig impl
+```
+
+# Test
 
 ```sh
 zig build test
