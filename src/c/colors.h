@@ -15,6 +15,8 @@
 // Cyan            36  46
 // White           37  47
 // Bright Black    90  100
+#define CON_GREY  "\033[0;90m"
+#define CON_GRAY  "\033[0;90m"
 // Bright Red      91  101
 // Bright Green    92  102
 // Bright Yellow   93  103
@@ -29,5 +31,7 @@
 #define CON_YELLOW ""
 #define CON_BLUE ""
 #define CON_MAGENTA ""
+#define CON_GREY  ""
+#define CON_GRAY  ""
 #define CON_RESET ""
 #endif

@@ -7,32 +7,49 @@
 #include <stdlib.h>
 #include "cargs/cargs.h"
 #include "colors.h"
+#include "version.h"
+
+typedef enum {
+    StatusOk = EXIT_SUCCESS,
+    UnknownError = EXIT_FAILURE,
+    OutputFilenameIsRequired = 2,
+    IOError = 7,
+    InputFilenameIsRequired = 13,
+    InputAndOutputEquality = 21,
+    BadArgument = 22
+} StatusCode;
 
 /**
  * This is the main configuration of all options available.
  */
-static struct cag_option options[] = {
-    {.identifier = 'd',
-     .access_letters = "d",
-     .access_name = "debug",
-     .value_name = NULL,
-     .description = "Enable debug output."},
-
-    {.identifier = 'o',
-     .access_letters = "o",
-     .access_name = "output",
-     .value_name = "VALUE",
-     .description = "Output file name."},
-
-    {.identifier = 'h',
-     .access_letters = "h",
-     .access_name = "help",
-     .description = "Shows the command help"}
+static struct cag_option options[] = {{
+        .identifier = 'h',
+        .access_letters = "h",
+        .access_name = "help",
+        .description = "Displays this help and exit."
+    },{
+        .identifier = 'o',
+        .access_letters = "o",
+        .access_name = "output",
+        .value_name = "VALUE",
+        .description = "Output filename."
+    },{
+        .identifier = 'd',
+        .access_letters = "d",
+        .access_name = "debug",
+        .value_name = NULL,
+        .description = "Enable debug output."
+    },{
+        .identifier = 'v',
+        .access_letters = "v",
+        .access_name = "version",
+        .description = "Output version string."
+    }
 };
 
-struct args_cfg
-{
+struct args_cfg {
     bool debug;
+    bool version;
     const char *input_file;
     const char *output_file;
 };
@@ -58,15 +75,25 @@ int main(int argc, char **argv)
             value = cag_option_get_value(&context);
             config.output_file = value;
             break;
+        case 'v':
+            printf("Version %s\n", VERSION);
+            return 0;
         case 'h':
-            printf("Usage: cargsdemo [OPTION]...\n");
-            printf("Demonstrates the cargs library.\n\n");
+            printf("\n%sicbuster (Image Checksum Buster)%s\n"
+            "%s----------------------------------------------------\n"
+            "Outputs a JPEG with randomly modified pixel to bust its checksum.\n"
+            "Version %s+clang\n\n  <FILE>\n", CON_GREEN, CON_RESET, CON_GRAY, VERSION);
             cag_option_print(options, CAG_ARRAY_SIZE(options), stdout);
-            printf("\nNote that all formatting is done by cargs.\n");
+            printf("%s\n", CON_RESET);
             return EXIT_SUCCESS;
         default:
             printf("Unknown identifier: %s\n", identifier);
+            return BadArgument;
         }
+    }
+
+    if (config.debug) {
+        printf("Debug mode.\n");
     }
 
     if (context.index < argc) {
@@ -82,10 +109,6 @@ int main(int argc, char **argv)
     if (!config.output_file) {
         printf("%sOutput file is required.%s\n", CON_RED, CON_RESET);
         return EXIT_FAILURE;
-    }
-
-    if (config.debug) {
-        printf("Debug mode.\n");
     }
 
     ICBError result = icbust_file(config.input_file, config.output_file, config.debug);

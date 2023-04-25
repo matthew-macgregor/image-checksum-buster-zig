@@ -15,6 +15,7 @@ pub fn build(b: *std.build.Builder) void {
     const exe = b.addExecutable("izbuster", "src/zig/main.zig");
     exe.addPackagePath("clap", "libs/zig-clap/clap.zig");
     exe.addIncludePath("libs");
+    exe.addIncludePath("src/c");
     // -fno-sanitize=undefined:
     // https://github.com/ziglang/zig/wiki/FAQ#why-do-i-get-illegal-instruction-when-using-with-zig-cc-to-build-c-code
     // stb_image has UB in stbi_write_jpg, and Clang treats this as illegal instruction in debug mode.
@@ -47,9 +48,7 @@ pub fn build(b: *std.build.Builder) void {
 
     // C executable
     const exe_c = b.addExecutable("icbuster", "src/c/main.c");
-    exe_c.addCSourceFile("libs/stb_image/stbi_image.c", &.{ "-Wall", "-Wextra", "-Werror", "-std=c99", "-fno-sanitize=undefined" });
-    exe_c.addCSourceFile("libs/cargs/cargs.c", &.{ "-Wall", "-Wextra", "-Werror", "-std=c11", "-fno-sanitize=undefined" });
-    exe_c.addCSourceFile("src/c/image.c", &.{ "-Wall", "-Wextra", "-Werror", "-std=c99", "-fno-sanitize=undefined" });
+    exe_c.addCSourceFiles(&.{ "libs/stb_image/stbi_image.c", "src/c/image.c", "libs/cargs/cargs.c" }, &.{ "-Wall", "-Wextra", "-Werror", "-std=c11", "-fno-sanitize=undefined" });
     exe_c.addIncludePath("libs");
     exe_c.addIncludePath("src/c");
     exe_c.setTarget(target);
